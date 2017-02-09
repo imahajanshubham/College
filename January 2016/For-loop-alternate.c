@@ -23,6 +23,7 @@ int main()
             count++;
         }
         
+        /*Count will ensure that the whole loop repeats n - times only.*/
         if(count == 10) {
             break;
         }
