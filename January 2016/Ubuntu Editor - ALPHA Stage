@@ -1,0 +1,142 @@
+/*Compile will only work in Ubuntu as when you press Ctrl + F9,
+system ("cc filename"); is executed.
+
+NOTE -
+    1. To stop getchar() from taking input,
+    Just press Ctrl + H and hit enter :)
+
+When you see Ubuntu:~$...
+    1. To see Document Statistics, Type Stats
+    2. To Compile and Run, Type Ctrl + F9 and hit enter.
+    3. To exit, quit from the Edit, Type ./Exit and hit enter.
+*/
+
+#include <stdio.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define TRUE 1
+#define FALSE 0
+#define START 0
+#define NEWLINE '\n'
+#define NULLCHAR '\0'
+#define SPACE ' '
+#define TAB '\t'
+#define EXIT '\b'
+#define ON 1
+#define OFF 0
+#define MAXLENGTH 50
+#define COMPILE ";5~"
+
+void getNameOfTheFile();
+void writeCode();
+void getInputFromUser();
+void getUserChoice();
+void selectAnOption();
+void newLineIsENcountered();
+void spaceIsEncountered();
+void tabIsEncountered();
+void displayDocumentStatistics();
+
+int newCharacter, lineCount, spaceCount, tabCount, characterCount, wordCount, totalCharCount, flag, inputIsVariable, newCharacter, inputIsVariable;;
+char choice[MAXLENGTH], fileName[MAXLENGTH], command[MAXLENGTH];
+
+int main()
+{
+    system("clear");
+    getNameOfTheFile();
+    
+    return 0;
+}
+
+void getNameOfTheFile()
+{
+    printf("EDITOR (~/) - gedit\n---\nUbuntu:~$ Name: ");
+    scanf("%s", fileName);
+    fflush(stdin);
+    writeCode();
+}
+
+void writeCode()
+{
+    system("clear");
+    lineCount = spaceCount = tabCount = characterCount = wordCount = flag = totalCharCount = START;
+    flag = OFF;   inputIsVariable = TRUE;
+    
+    printf("%s (~/) - gedit\n", fileName);
+    printf("---\n");
+    
+    getInputFromUser();
+}
+
+void getInputFromUser()
+{
+    inputIsVariable = TRUE;
+    FILE *fptr;
+    
+    fptr = fopen(fileName, "w");
+    
+    while((newCharacter = getchar()) != EXIT) {
+        fprintf(fptr, "%c", newCharacter);
+        switch(newCharacter) {
+            case NEWLINE: inputIsVariable = FALSE; newLineIsENcountered(); break;
+            case SPACE:   inputIsVariable = FALSE; spaceIsEncountered();   break;
+            case TAB:     inputIsVariable = FALSE; tabIsEncountered();     break;
+        }
+        
+        if(inputIsVariable == TRUE) {
+            characterCount++;   flag = ON;
+        }
+        
+        totalCharCount++;
+    }
+    
+    fclose(fptr);
+    getUserChoice();
+}
+
+void getUserChoice()
+{
+    do {
+            printf("---\n\nUbuntu:~$ ");
+            scanf("%s", choice);
+            selectAnOption();
+    }while(strstr(choice, "./Exit") == OFF);
+}
+
+void selectAnOption()
+{
+    if(strstr(choice, "Stats")) displayDocumentStatistics();
+    else if(strstr(choice, COMPILE)) {
+        system("clear");   strcat(command, "cc ");   strcat(command, fileName);   system(command);  system("./a.out");
+        command[START] = NULLCHAR;
+    }
+}
+
+void newLineIsENcountered()
+{
+    if(flag == ON) wordCount++;
+    
+    flag = OFF;
+    if(lineCount < 10) printf(" %d. ", ++lineCount);
+    else printf("%d. ", ++lineCount);
+}
+
+void spaceIsEncountered()
+{
+    if(flag == ON) wordCount++;
+    spaceCount++;   flag = OFF;
+}
+
+void tabIsEncountered()
+{
+    if(flag == ON) wordCount++;
+    tabCount++;   flag = OFF;
+}
+
+void displayDocumentStatistics()
+{
+    printf("---\nDocument Statistics\n      lol.c\n---");
+    printf("\nLines           %d\nWords           %d\nCharacters:\n   With spaces  %d\n   No spaces    %d", lineCount, ++wordCount, totalCharCount, characterCount);
+    printf("\nSpaces          %d\nTabs            %d\nBytes           %d\n", spaceCount, tabCount, totalCharCount);
+}
